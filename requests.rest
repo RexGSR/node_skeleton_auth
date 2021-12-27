@@ -2,7 +2,7 @@ POST  http://localhost:3000/api/v1/auth/login
 content-type: application/json
 
 {
-    "email":"user@gmail.com",
+    "email":"user_five@gmail.com",
     "password":"123456"
 }
 
@@ -11,8 +11,8 @@ POST  http://localhost:3000/api/v1/auth/register
 content-type: application/json
 
 {   
-    "name": "user",
-    "email":"user@gmail.com",
+    "name": "newUser",
+    "email":"user_hell@gmail.com",
     "password":"123456",
     "confirmPassword":"123456"
 }
@@ -21,6 +21,7 @@ content-type: application/json
 GET http://localhost:3000/api/v1/users
 content-type: application/json
 Authorization: Bearer token
+
 #######
 GET http://localhost:3000/api/v1/auth
 content-type: application/json

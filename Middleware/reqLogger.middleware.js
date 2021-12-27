@@ -1,4 +1,4 @@
-const { logger } = require("../Helpers/index.helper");
+const { logger } = require("../Helpers");
 
 function reqLogger(req, res, next) {
     const currentDateTime = new Date();

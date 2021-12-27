@@ -1,8 +1,10 @@
 const app = require("./app");
-const { logger } = require("./Helpers/index.helper");
-const { connection } = require("./Database/connections");
+const { logger } = require("./Helpers");
+const { connection } = require("./Database");
 
-app.listen(process.env.PORT, async (error) => {
+const { PORT } = process.env;
+
+app.listen(PORT, async (error) => {
     if (error) {
         logger.error(error);
         process.exit(1);
@@ -15,5 +17,5 @@ app.listen(process.env.PORT, async (error) => {
         logger.error(connectionError);
     }
 
-    logger.info(`Server started on: http://localhost:${process.env.PORT}`);
+    logger.info(`Server started on: http://localhost:${PORT}`);
 });

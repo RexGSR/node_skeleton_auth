@@ -1,19 +1,53 @@
-# node_skeleton_auth
-skeleton files for a node, express and mongodb with jwt auth
+### node_skeleton_auth
+### skeleton files with node, express, mongodb and jwt auth
 
-project setup:
+### project setup
 
-1) npm install
-2) add environment variables in .env file
-3) npm run deploy:dev
+### installs project dependencies
+```
+npm install
+```
+
+### add environment variables
+```
+add changes in .env file
+```
+### start mongodb :only-if you are not using an atlas cluster
+
+### start server 
+```
+npm run deploy:dev
+```
+
+### predefined routes:
+```
+<baseurl>/api/v1/auth/login
+```
+user and admin login
+
+```
+<baseurl>/api/v1/auth/register
+```
+registers a user with user role
 
 
-predefined routes:
-1) <baseurl>/api/v1/auth/login  > user and admin login
-2) <baseurl>/api/v1/auth/register > registers a user with user role
-3) <baseurl>/api/v1/users > returns a list of users :admin only
-4) <baseurl>/api/v1/auth > returns accessToken, refreshToken for a given refreshToken
+```
+<baseurl>/api/v1/users
+```
+returns a list of users :admin only
 
-sample requests file: requests.rest 
+```
+<baseurl>/api/v1/auth
+```
+returns accessToken, refreshToken for a given refreshToken
 
+### sample requests file: 
+```
+requests.rest
+``` 
 
+#### for more customizations 
+See NodeJs docs [Configuration Reference](https://nodejs.org/docs/latest-v14.x/api/)
+See ExpressJs docs [Configuration Reference](https://expressjs.com/en/5x/api.html)
+See Mongooose docs [Configuration Reference](https://mongoosejs.com/docs/)
+See npm packages [Configuration Reference](https://www.npmjs.com/)

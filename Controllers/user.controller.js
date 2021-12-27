@@ -1,9 +1,7 @@
-const { getAllUser, response } = require("../Helpers/index.helper");
+const { response } = require("../Helpers");
 
-const get = async (req, res) => {
-    return response.success(res, { data, message: "req received" });
-};
+const getUsers = async (req, res) => response.success(res, { message: "req received" });
 
 module.exports = {
-    get,
+    getUsers,
 };

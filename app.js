@@ -4,8 +4,8 @@ const xss = require("xss-clean");
 const mongoSanitize = require("express-mongo-sanitize");
 require("dotenv").config();
 
-const { authRoute, users } = require("./Routes/index.route");
-const { ReqError, ReqLogger } = require("./Middleware/index.middleware");
+const { authRoute, users } = require("./Routes");
+const { ReqLogger } = require("./Middleware");
 
 const app = express();
 
@@ -16,6 +16,5 @@ app.use(mongoSanitize());
 app.use(ReqLogger);
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/users", users);
-app.use(ReqError);
 
 module.exports = app;

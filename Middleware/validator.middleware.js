@@ -1,5 +1,5 @@
-const Validators = require("../Validators/index.validator");
-const { response } = require("../Helpers/index.helper");
+const Validators = require("../Validators");
+const { response } = require("../Helpers");
 
 module.exports = (validator) => {
     // ? verifying if the validator exists

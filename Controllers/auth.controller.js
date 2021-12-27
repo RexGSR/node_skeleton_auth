@@ -3,14 +3,22 @@ const {
     logger,
     isUnique,
     create,
-    getDataByQuery,
+    read,
     generateHash,
     generateToken,
     verifyToken,
     extractToken,
     compareHash,
-} = require("../Helpers/index.helper");
-const { User } = require("../Database/Models/index.model");
+} = require("../Helpers");
+const { User } = require("../Database/Models");
+
+const {
+    ACCESS_TOKEN_SECRET,
+    REFRESH_TOKEN_SECRET,
+    ACCESS_TOKEN_EXPIRY,
+    REFRESH_TOKEN_EXPIRY,
+} = process.env;
+
 /**
  * @description Tries to register the user with provided body
  * @param req {object} Express req object
@@ -19,7 +27,6 @@ const { User } = require("../Database/Models/index.model");
  */
 const register = async (req, res) => {
     const { name: reqName, email: reqEmail, password: reqPassword } = req.body;
-
     // unique email
     const findMail = await isUnique(User, reqEmail);
     if (!findMail?.success && findMail.error) logger.error(findMail.error);
@@ -27,33 +34,29 @@ const register = async (req, res) => {
 
     // hash password
     const passwordHash = await generateHash(reqPassword);
-    if (!passwordHash) return response.error(res, {});
+    if (!passwordHash) return response.error(res);
 
     // create user
     const createUser = await create(User, {
         name: reqName,
         email: reqEmail,
         password: passwordHash,
-        role: ["user"],
     });
     if (!createUser?.success) logger.error(createUser?.data);
-    if (!createUser?.success) return response.error(res, {});
-    const {
-        name,
-        email,
-        role,
-        _id,
-    } = createUser.data;
+    if (!createUser?.success) return response.error(res);
+
     const userData = {
-        id: _id,
-        name,
-        email,
-        role,
+        // eslint-disable-next-line no-underscore-dangle
+        id: createUser.data._id,
+        name: createUser.data.name,
+        email: createUser.data.email,
+        role: createUser.data.role,
     };
+
     // generate token
-    const accessToken = await generateToken(userData, "1h", process.env.ACCESS_TOKEN_SECRET);
-    const refreshToken = await generateToken(userData, "30 days", process.env.REFRESH_TOKEN_SECRET);
-    if (!accessToken || !refreshToken) return response.error(res, {});
+    const accessToken = await generateToken(userData, ACCESS_TOKEN_EXPIRY, ACCESS_TOKEN_SECRET);
+    const refreshToken = await generateToken(userData, REFRESH_TOKEN_EXPIRY, REFRESH_TOKEN_SECRET);
+    if (!accessToken || !refreshToken) return response.error(res);
     return response.success(res, { data: [{ accessToken, refreshToken }] });
 };
 
@@ -66,28 +69,22 @@ const register = async (req, res) => {
 const login = async (req, res) => {
     const { email: reqEmail, password: reqPassword } = req.body;
 
-    const user = await getDataByQuery(User, { email: reqEmail });
-    if (!user.success) return response.error(res, {});
+    const user = await read(User, { email: reqEmail });
+    if (!user.success) return response.error(res);
     if (user.success && user?.data?.message) return response.forbidden(res, { message: `user not registered: ${reqEmail}` });
-    const {
-        _id,
-        name,
-        email,
-        password,
-        role,
-    } = user.data[0];
 
     const userData = {
-        id: _id,
-        name,
-        email,
-        role,
+        // eslint-disable-next-line no-underscore-dangle
+        id: user.data[0]._id,
+        name: user.data[0].name,
+        email: user.data[0].email,
+        role: user.data[0].role,
     };
-    const passCheck = await compareHash(reqPassword, password);
+    const passCheck = await compareHash(reqPassword, user.data[0].password);
     if (!passCheck) return response.unauthorized(res, { message: "invalid user name or password" });
 
-    const accessToken = await generateToken(userData, "1h", process.env.ACCESS_TOKEN_SECRET);
-    const refreshToken = await generateToken(userData, "30 days", process.env.REFRESH_TOKEN_SECRET);
+    const accessToken = await generateToken(userData, ACCESS_TOKEN_EXPIRY, ACCESS_TOKEN_SECRET);
+    const refreshToken = await generateToken(userData, REFRESH_TOKEN_EXPIRY, REFRESH_TOKEN_SECRET);
 
     if (!accessToken || !refreshToken) return response.error(res);
     return response.success(res, { data: [{ accessToken, refreshToken }] });
@@ -102,28 +99,23 @@ const login = async (req, res) => {
 const generateTokens = async (req, res) => {
     const token = extractToken(req);
     if (!token) return response.badRequest(res, { status: 422 });
-    const verify = await verifyToken(token, process.env.REFRESH_TOKEN_SECRET);
+    const verify = await verifyToken(token, REFRESH_TOKEN_SECRET);
     if (verify === "TokenExpiredError") return response.unauthorized(res, { message: "access token expired" });
-    if (!verify && (typeof verify === "boolean")) return response.unauthorized(res, {});
-    const user = await getDataByQuery(User, { id: verify.id });
-    if (!user.success) return response.error(res, {});
+    if (!verify && (typeof verify === "boolean")) return response.unauthorized(res);
+    const user = await read(User, { id: verify.id });
+    if (!user.success) return response.error(res);
     if (user.success && user?.data?.message) return response.forbidden(res, { message: "user not registered" });
-    const {
-        _id,
-        name,
-        email,
-        role,
-    } = user.data[0];
 
     const userData = {
-        id: _id,
-        name,
-        email,
-        role,
+        // eslint-disable-next-line no-underscore-dangle
+        id: user.data[0]._id,
+        name: user.data[0].name,
+        email: user.data[0].email,
+        role: user.data[0].role,
     };
-    const accessToken = await generateToken(userData, "1h", process.env.ACCESS_TOKEN_SECRET);
-    const refreshToken = await generateToken(userData, "30 days", process.env.REFRESH_TOKEN_SECRET);
-    if (!accessToken || !refreshToken) return response.error(res, {});
+    const accessToken = await generateToken(userData, ACCESS_TOKEN_EXPIRY, ACCESS_TOKEN_SECRET);
+    const refreshToken = await generateToken(userData, REFRESH_TOKEN_EXPIRY, REFRESH_TOKEN_SECRET);
+    if (!accessToken || !refreshToken) return response.error(res);
     return response.success(res, { data: [{ accessToken, refreshToken }] });
 };
 

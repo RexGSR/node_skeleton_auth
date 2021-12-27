@@ -1,5 +1,9 @@
-const { response } = require("../Helpers/index.helper");
-const { logger, verifyToken, extractToken } = require("../Helpers/index.helper");
+const {
+    response,
+    logger,
+    verifyToken,
+    extractToken,
+} = require("../Helpers");
 
 function authorize(authRoles) {
     const roles = ["admin", "superAdmin", "user"];
@@ -12,7 +16,7 @@ function authorize(authRoles) {
             return match[0];
         }));
         const acceptedRole = authRoles.filter((role) => role === reqUserRole);
-        if (acceptedRole.length !== 1) return response.unauthorized(res, {});
+        if (acceptedRole.length !== 1) return response.unauthorized(res);
         next();
     };
 }
@@ -22,7 +26,7 @@ async function authJwt(req, res, next) {
     const token = extractToken(req);
     const verify = await verifyToken(token, process.env.ACCESS_TOKEN_SECRET);
     if (verify === "TokenExpiredError") return response.unauthorized(res, { message: "access token expired" });
-    if (!verify && (typeof verify === "boolean")) return response.unauthorized(res, {});
+    if (!verify && (typeof verify === "boolean")) return response.unauthorized(res);
     req.body.id = verify?.id;
     req.body.role = verify?.role;
     next();

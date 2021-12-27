@@ -1,6 +1,6 @@
 const express = require("express");
-const { register, login, generateTokens } = require("../Controllers/index.controller");
-const { Validator } = require("../Middleware/index.middleware");
+const { register, login, generateTokens } = require("../Controllers");
+const { Validator } = require("../Middleware");
 
 const router = express.Router();
 

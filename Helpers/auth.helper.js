@@ -1,66 +1,6 @@
 const jwt = require("jsonwebtoken");
-const fs = require("fs").promises;
-const path = require("path");
 const bcrypt = require("bcrypt");
-/**
- * @description finds if the provided email is unique
- * @param model mongoose user model
- * @param email string: email provided by user
- * @returns object: { success: boolean, error: boolean || error }
- */
-async function isUnique(model, email) {
-    try {
-        const count = await model.count({ email });
-        if (count > 0) return { success: false, error: false };
-        return { success: true, error: false };
-    } catch (error) {
-        return { success: false, error };
-    }
-}
 
-/**
- * @description finds if the provided email is unique
- * @param model mongoose model
- * @param data object: data object that to be created
- * @returns object: { success: boolean, error: boolean || error }
- */
-async function create(Model, user) {
-    try {
-        const dataModel = new Model(user);
-        const data = await dataModel.save();
-        return { success: true, data };
-    } catch (error) {
-        return { success: false, data: error };
-    }
-}
-
-/**
- * @description finds data based on query and model
- * @param Model mongoose model
- * @param query object: data query eg: { email: user@email.com}
- * @returns  object: { success: boolean, data || error: object }
- */
-async function getDataByQuery(Model, query) {
-    try {
-        const data = await Model.find(query);
-        if (!data.length) return { success: true, data: { message: "No data found" } };
-        return { success: true, data };
-    } catch (error) {
-        return { success: false, error };
-    }
-}
-/**
- * @description get user from user.json with similar email
- * @returns  data {object}, user data or false
- */
-async function getAllUser() {
-    const userPath = path.join(__dirname, "../Database/User.json");
-    let data = await fs.readFile(userPath, "utf-8");
-    data = await JSON.parse(data);
-    data = data.users;
-    if (!data?.length) return false;
-    return data;
-}
 /**
  * @description generates hashed password for plain password
  * @param password string: password provided by user
@@ -82,25 +22,14 @@ async function generateHash(password) {
 
 /**
  * @description generates json web token for provided user with expiry time
- * @param user {object} user object and time
+ * @param user {object} user object
  * @param time token expiry time {'1h', '1M', 60*60}
  * @param secret secret key to sign jwt
  * @returns json web token or false
  */
-async function generateToken(user, time, secret) {
-    const {
-        id,
-        name,
-        email,
-        role,
-    } = user;
+async function generateToken(data, time, secret) {
     try {
-        const token = jwt.sign({
-            id,
-            name,
-            email,
-            role,
-        }, secret, { expiresIn: time });
+        const token = jwt.sign(data, secret, { expiresIn: time });
         return token;
     } catch (error) {
         return false;
@@ -125,6 +54,11 @@ async function verifyToken(token, secret) {
     return data;
 }
 
+/**
+ * @description extracts Bearer token from request headers
+ * @param req req object
+ * @returns false or token
+ */
 function extractToken(req) {
     if (!Object.prototype.hasOwnProperty.call(req.headers, "authorization")) return false;
     let { authorization: token } = req.headers;
@@ -133,6 +67,7 @@ function extractToken(req) {
     token = token.split(" ")[1];
     return token;
 }
+
 /**
  * @description compares provided hash with user password
  * @param userPassword string: password provided by user
@@ -150,11 +85,7 @@ async function compareHash(userPassword, hash) {
 }
 
 module.exports = {
-    isUnique,
-    getDataByQuery,
-    getAllUser,
     generateHash,
-    create,
     generateToken,
     verifyToken,
     extractToken,
