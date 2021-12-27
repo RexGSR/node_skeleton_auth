@@ -8,10 +8,8 @@
 npm install
 ```
 
-### add environment variables
-```
-add changes in .env file
-```
+### add environment variables: add changes in .env file
+
 ### start mongodb :only-if you are not using an atlas cluster
 
 ### start server 
@@ -47,7 +45,7 @@ requests.rest
 ``` 
 
 #### for more customizations 
-See NodeJs docs [Configuration Reference](https://nodejs.org/docs/latest-v14.x/api/)
-See ExpressJs docs [Configuration Reference](https://expressjs.com/en/5x/api.html)
-See Mongooose docs [Configuration Reference](https://mongoosejs.com/docs/)
-See npm packages [Configuration Reference](https://www.npmjs.com/)
+See NodeJs docs [Reference](https://nodejs.org/docs/latest-v14.x/api/)<br>
+See ExpressJs docs [Reference](https://expressjs.com/en/5x/api.html)<br>
+See Mongooose docs [Reference](https://mongoosejs.com/docs/)<br>
+See npm packages [Reference](https://www.npmjs.com/)<br>
