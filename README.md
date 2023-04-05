@@ -14,7 +14,13 @@ npm install
 
 ### start server 
 ```
-npm run deploy:dev
+npm run dev
+```
+```
+npm run serve
+```
+```
+npm run watch
 ```
 
 ### predefined routes:
