@@ -60,3 +60,4 @@ const init = async (seeder) => {
 
 init(seeder);
 // seeder command => ```npm run seed -- seeder_name```
+// seeder command => ```npm run seed -- role```  for role seeder

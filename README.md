@@ -40,6 +40,9 @@ returns accessToken, refreshToken for a given refreshToken
 ``` 
 npm run seed -- SEEDER_NAME
 ```
+```
+'npm run seed -- role'  for role seeder
+```
 
 #### for more customizations 
 See NodeJs docs [Reference](https://nodejs.org/docs/latest-v14.x/api/)<br>
