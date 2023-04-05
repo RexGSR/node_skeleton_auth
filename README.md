@@ -34,10 +34,7 @@ registers a user with user role
 ```
 returns accessToken, refreshToken for a given refreshToken
 
-### sample requests file: 
-```
-requests.rest
-``` 
+
 
 ### run database seeders
 ``` 

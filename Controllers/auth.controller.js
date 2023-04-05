@@ -29,7 +29,7 @@ async function register(req, res, next) {
         await DB.isUnique(User, { email: req.body.email });
         
         // TODO: make sure to set role as VENDOR if it is not ADMIN 
-        const role = await DB.read(Role, { role: "VENDOR" });
+        const role = await DB.read(Role, { role: "USER" });
         // hash password
         const passwordHash = await AuthHelper.generateHash(req.body.password);
 

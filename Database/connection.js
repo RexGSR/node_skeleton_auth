@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+mongoose.set('strictQuery', true);
 
 const { DATABASE_URI_PROD, DATABASE_URI_DEV, NODE_ENV } = process.env;
 

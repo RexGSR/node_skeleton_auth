@@ -7,14 +7,11 @@ const Role = require("../Database/Models/role.model");
 function authorize(authRoles) {
     return async (req, res, next) => {
         const roles = await DB.read(Role, { _id: { $in: (req.query.user_role).split(',') } });
-        console.log("roles --", roles);
-        console.log((req.query.user_role).split(','));
         if (roles.length && authRoles.length) {
             let rolesArray = roles.map((item) => item.role);
             let grantAcccess = false;
             let i = 0;
             let length = rolesArray.length;
-            
             for (i; i < length; i++) {
                 if (authRoles.includes(rolesArray[i])) {
                     grantAcccess = true;
@@ -24,8 +21,6 @@ function authorize(authRoles) {
                 }
                 continue;
             }
-            console.log(rolesArray);
-            console.table({ grantAcccess, length });
             if (grantAcccess) return next();
         }
         res.set('x-server-errortype', 'AccessDeniedException');
