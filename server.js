@@ -1,21 +1,50 @@
+const { createServer } = require("http");
+const { Server } = require("socket.io");
+
 const app = require("./app");
-const { logger } = require("./Helpers");
-const { connection } = require("./Database");
+const { connection } = require("./Database/connection");
+const Logger = require("./Helpers/logger");
+const { IST } = require("./Helpers/dateTime.helper");
+const HandleError = require('./Middleware/errorHandler.middleware');
 
-const { PORT } = process.env;
 
-app.listen(PORT, async (error) => {
+const server = createServer(app);
+
+const { PORT, NODE_ENV } = process.env;
+
+const httpServer = server.listen(PORT || 9081, '0.0.0.0', async (error) => {
+    // Logger.info(`Server started connection on port ${PORT || 9081}`);
     if (error) {
-        logger.error(error);
+        Logger.error(error);
         process.exit(1);
     }
     try {
         await connection();
-        logger.info("connected to the database");
+        console.log(`server started on port: [${PORT || 9081}] with [${(NODE_ENV).toUpperCase()} --env] [${IST("date")} ${IST('time')}]`);
     } catch (connectionError) {
-        logger.error("database connection error");
-        logger.error(connectionError);
+        console.log("Unable to connect --DATABASE, Killing app :(");
+        Logger.error(connectionError?.stack);
+        process.exit(1);
     }
-
-    logger.info(`Server started on: http://localhost:${PORT}`);
 });
+
+
+const io = new Server(httpServer, {
+    maxHttpBufferSize: 1024,
+    pingInterval: 60 * 1000,
+    pingTimeout: 60 * 4000,
+    cors: {
+        origins: process.env.CORS_URLS.split(", "),
+    },
+});
+
+require("./Controllers/socket.controller")(io);
+
+//? routes
+require("./Routes")();
+
+//? error handler middleware
+app.use(HandleError);
+
+//? setting socket io as global
+global.io = io;

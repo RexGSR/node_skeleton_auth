@@ -1,7 +1,9 @@
 const authRoute = require("./auth.routes");
-const users = require("./user.routes");
+const app = require("../app");
 
-module.exports = {
-    authRoute,
-    users,
-};
+//! always remove /api before pushing to server
+function appRouter() {
+    app.use("/api/v1/auth", authRoute);
+}
+
+module.exports = appRouter;

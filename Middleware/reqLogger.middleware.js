@@ -1,18 +1,8 @@
-const { logger } = require("../Helpers");
+const logger = require("../Helpers/logger");
+const { IST } = require("../Helpers/dateTime.helper");
 
 function reqLogger(req, res, next) {
-    const currentDateTime = new Date();
-    const formattedDate = `${currentDateTime.getFullYear()
-    }-${
-        currentDateTime.getMonth() + 1
-    }-${
-        currentDateTime.getDate()
-    } ${
-        currentDateTime.getHours()
-    }:${
-        currentDateTime.getMinutes()
-    }:${
-        currentDateTime.getSeconds()}`;
+    const formattedDate = IST();
 
     const ip = req.headers["x-forwarded-for"]
      || req.connection.remoteAddress

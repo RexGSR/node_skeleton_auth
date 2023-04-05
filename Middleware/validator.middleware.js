@@ -1,5 +1,5 @@
 const Validators = require("../Validators");
-const { response } = require("../Helpers");
+const Response = require("../Helpers/response.helper");
 
 module.exports = (validator) => {
     // ? verifying if the validator exists
@@ -16,8 +16,12 @@ module.exports = (validator) => {
             next();
         } catch (error) {
             // eslint-disable-next-line max-len
-            if (error.isJoi) { return response.error(res, { status: 422, message: error.message }); }
-            return response.error(res, { status: 500, message: error.message });
+            if (error.isJoi) {
+                res.set('x-server-errortype', 'InvalidRequestBodyException');
+                return Response.badRequest(res, {  message: error.message });
+            }
+            res.set('x-server-errortype', 'InternalServerError');
+            return Response.error(res, { status: 500, message: "Oops! Something went wrong" });
         }
     };
 };

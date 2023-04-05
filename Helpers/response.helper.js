@@ -3,7 +3,8 @@ exports.success = (res, data = false) => {
     res.status(data.status || 200).json({
         success: true,
         data: data.data || [],
-        message: data.message || "data sent",
+        count: data.count || 0,
+        message: data.message || "data sent", 
     });
 };
 

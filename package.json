@@ -1,17 +1,23 @@
 {
-  "name": "node_skeleton_auth",
+  "name": "node-skeleton-auth",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
   "scripts": {
-    "deploy:dev": "nodemon restart server.js",
-    "deploy:test": "jest",
-    "deploy:prod": "cross-env NODE_ENV=production  node server.js"
+    "dev": "nodemon server.js",
+    "watch": "nodemon server.js",
+    "serve": "nodemon server.js",
+    "seed": "node ./Database/Seeder/index.js",
+    "prod": "pm2 start ecosystem.config.js --env production",
+    "test": "jest"
   },
   "author": "Gaurav",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.27.2",
     "bcrypt": "^5.0.1",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "dayjs": "^1.10.7",
     "dotenv": "^10.0.0",
@@ -21,21 +27,20 @@
     "helmet": "^4.6.0",
     "http-errors": "^1.8.1",
     "joi": "^17.4.3",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "mongoose": "^6.0.14",
+    "socket.io": "^4.4.1",
+    "winston": "^3.3.3",
+    "winston-daily-rotate-file": "^4.7.1",
     "xss-clean": "^0.1.1"
   },
   "devDependencies": {
-    "eslint": "^8.3.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.25.3",
     "jest": "^27.4.3",
-    "morgan": "^1.10.0",
     "nodemon": "^2.0.15",
-    "supertest": "^6.1.6",
-    "winston": "^3.3.3"
+    "supertest": "^6.1.6"
   },
   "engines": {
-    "node": "14.17.3"
+    "node": "16.13.0",
+    "npm": "8.1.0"
   }
 }

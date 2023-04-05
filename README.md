@@ -30,11 +30,6 @@ registers a user with user role
 
 
 ```
-<baseurl>/api/v1/users
-```
-returns a list of users :admin only
-
-```
 <baseurl>/api/v1/auth
 ```
 returns accessToken, refreshToken for a given refreshToken
@@ -43,6 +38,11 @@ returns accessToken, refreshToken for a given refreshToken
 ```
 requests.rest
 ``` 
+
+### run database seeders
+``` 
+npm run seed -- SEEDER_NAME
+```
 
 #### for more customizations 
 See NodeJs docs [Reference](https://nodejs.org/docs/latest-v14.x/api/)<br>
